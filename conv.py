@@ -1,7 +1,6 @@
 
 import numpy as np
-
-# from PIL import Image
+from PIL import Image
 
 def conv_arr(inp: np.ndarray, ker: np.ndarray) -> np.ndarray:
 
@@ -40,14 +39,21 @@ def conv_arr(inp: np.ndarray, ker: np.ndarray) -> np.ndarray:
 
 def main():
 
-    inp = np.array([1, 2, 3, 4, 5, 4, 3, 2, 1])
-    print("inp =", inp)
-
     ker = np.array([1, 2, 1])
     print("ker =", ker)
 
-    out = conv_arr(inp, ker)
-    print("out =", out)
+    img = Image.open('input.png').convert('L')
+    arr = np.array(img)
+    new_arr = np.zeros_like(arr)
+
+    h, w = arr.shape
+
+    for y in range(h):
+        new_arr[y] = conv_arr(arr[y], ker)
+
+    new_img = Image.fromarray(new_arr)
+    new_img.show()
+    new_img.save('output.png')
 
 if __name__ == "__main__":
     main()
