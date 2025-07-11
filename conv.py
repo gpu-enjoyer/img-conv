@@ -39,7 +39,7 @@ def conv_arr(inp: np.ndarray, ker: np.ndarray) -> np.ndarray:
 
 def main():
 
-    ker = np.array([1, 2, 1])
+    ker = np.array([[1, 2, 1], [0, 0, 0], [2, 1, 2]])
     print("ker =", ker)
 
     img = Image.open('input.png').convert('L')
@@ -49,7 +49,7 @@ def main():
     h, w = arr.shape
 
     for y in range(h):
-        new_arr[y] = conv_arr(arr[y], ker)
+        new_arr[y] = conv_arr(arr[y], ker[y % 3])
 
     new_img = Image.fromarray(new_arr)
     new_img.show()
