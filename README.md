@@ -1,10 +1,7 @@
 
 ### 1-byte Greyscale Image Convolution
-
-- [x] 1D array convolution  
-    uses symmetric padding at borders
-
-- [ ] 2D array convolution
+ 
+- symmetric padding of image borders
 
 <table>
 <tr>

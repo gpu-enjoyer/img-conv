@@ -2,6 +2,7 @@
 import numpy as np
 from PIL import Image
 
+
 def conv_arr(inp: np.ndarray, ker: np.ndarray) -> np.ndarray:
 
     out = np.zeros_like(inp)
@@ -37,21 +38,71 @@ def conv_arr(inp: np.ndarray, ker: np.ndarray) -> np.ndarray:
     
     return out
 
+
+def check_mat_ker(ker: np.ndarray) -> bool:
+
+    if ker.ndim != 2:
+        print("ker must be 2D matrix")
+        return False
+    
+    if ker.shape[0] != ker.shape[1]:
+        print("ker must be square matrix")
+        return False
+    
+    if ker.size % 2 == 0:
+        print("ker.size must be odd")
+        return False
+    
+    return True
+
+
+def conv_mat(inp: np.ndarray, ker: np.ndarray) -> np.ndarray:
+
+    out       = np.zeros_like(inp)
+    shift_y   = ker.shape[0] // 2
+
+    if not check_mat_ker(ker):
+        return out
+
+    for y in range(out.shape[0]):
+
+        sum_arr = np.zeros_like(out[0])
+        ker_y = 0
+
+        for yy in range(y - shift_y, y + shift_y):
+
+            if yy < 0:
+                if -yy < out.shape[0]:
+                    sum_arr += conv_arr(inp[-yy], ker[ker_y])
+
+            elif yy >= out.shape[0]:
+                    inp_y = 2 * (out.shape[0] - 1) - yy
+                    if inp_y >= 0:
+                        sum_arr += conv_arr(inp[inp_y], ker[ker_y])
+
+            else:
+                sum_arr += conv_arr(inp[yy], ker[ker_y])
+
+            ker_y += 1
+
+        out[y] = sum_arr
+    
+    return out
+
+
 def main():
 
-    ker = np.array([[1, 2, 1], [0, 0, 0], [2, 1, 2]])
-    print("ker =", ker)
+    ker = np.array([[1.2, 1.2, 1.2], 
+                    [1.2,   0, 1.2], 
+                    [1.2, 1.2, 1.2]])
+    
+    print("ker = \n", ker)
 
     img = Image.open('input.png').convert('L')
-    arr = np.array(img)
-    new_arr = np.zeros_like(arr)
+    mat = np.array(img)
+    new_mat = conv_mat(mat, ker)
 
-    h, w = arr.shape
-
-    for y in range(h):
-        new_arr[y] = conv_arr(arr[y], ker[y % 3])
-
-    new_img = Image.fromarray(new_arr)
+    new_img = Image.fromarray(new_mat)
     new_img.show()
     new_img.save('output.png')
 
